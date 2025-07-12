@@ -1,0 +1,32 @@
+{
+    "name": "mage-stack/module-fire-push",
+    "description": "Magento 2 websocket module using google firebabase",
+    "type": "magento2-module",
+    "license": "MIT",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Amit Biswas",
+            "email": "amit.biswas.webdeveloper@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "magento/framework": "103.0.8",
+        "kreait/firebase-php": "^7.0",
+        "mage-stack/module-core": "1.0.2"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MageStack\\FirePush\\": ""
+        }
+    },
+    "homepage": "https://github.com/attherateof/FirePush",
+    "support": {
+        "issues": "https://github.com/attherateof/FirePush/issues"
+    }
+}

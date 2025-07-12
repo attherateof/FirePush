@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!--
+ ~ Copyright © 2025 MageStack. All rights reserved.
+ ~ See COPYING.txt for license details.
+ ~
+ ~ DISCLAIMER
+ ~
+ ~ Do not make any kind of changes to this file if you
+ ~ wish to upgrade this extension to newer version in the future.
+ ~
+ ~ @category  MageStack
+ ~ @package   MageStack_SocialLogin
+ ~ @author    Amit Biswas <amit.biswas.webdeveloper@gmail.com>
+ ~ @copyright 2025 MageStack
+ ~ @license   https://opensource.org/licenses/MIT  MIT License
+ ~ @link      https://github.com/attherateof/SocialLogin
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="websocket" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+            <class>separator-top</class>
+            <label>WebSocket</label>
+            <tab>mage_stack_tab</tab>
+            <resource>MageStack_FirePush::Config</resource>
+            <group id="firebase" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Google firebase</label>
+                <field id="is_enabled" translate="label" type="select" showInDefault="1"  showInWebsite="1" showInStore="0" canRestore="1" sortOrder="10"> 
+                    <label>Is enabled?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="project_id" translate="label" type="obscure" showInDefault="1"  showInWebsite="0" showInStore="0" canRestore="1" sortOrder="20">
+                    <label>Project Id</label>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="private_key_id" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="30">
+                    <label>Private key Id</label>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="private_key" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="40">
+                    <label>Private key</label>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="client_email" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="50">
+                    <label>Client email</label>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="client_id" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="60">
+                    <label>Client Id</label>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="vap_pub_key" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="70">
+                    <label>VAP public key</label>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
