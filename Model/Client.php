@@ -23,27 +23,39 @@ namespace MageStack\FirePush\Model;
 
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging;
-use MageStack\FirePush\Api\ConfigBuilderInterface;
+use MageStack\FirePush\Api\ConfigInterface;
 
 class Client
 {
     private ?Messaging $messaging = null;
 
+    private ?string $fireBaseConfig = null;
+
     public function __construct(
         private readonly Factory $firebaseFactory,
-        private readonly ConfigBuilderInterface $configBuilder
+        private readonly ConfigInterface $config
     ) {
     }
 
     public function get(): Messaging
     {
         if (!$this->messaging instanceof Messaging) {
-            $config = $this->configBuilder->build();
+            $config = $this->getConfig();
             $factory = $this->firebaseFactory->withServiceAccount($config);
 
             $this->messaging = $factory->createMessaging();
         }
 
         return $this->messaging;
+    }
+
+
+    private function getConfig(): string
+    {
+        if (empty($this->fireBaseConfig)) {
+            $this->fireBaseConfig = $this->config->getFirebaseConfig();
+        }
+
+        return $this->fireBaseConfig;
     }
 }

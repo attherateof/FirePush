@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace MageStack\FirePush\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -29,7 +30,7 @@ class Validate extends Command
         $message = $this->message->setTitle('Validate')->setBody('Sample message to test connection.');
 
         if ($this->messageService->send($message, 'validate')) {
-            $output->writeln('<info> Connection successful ... </info>');
+            $output->writeln('<info> Connection successful .... </info>');
         } else {
             $output->writeln('<error> Connection failed ... </error>');
         }

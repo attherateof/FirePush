@@ -29,53 +29,13 @@
                     <label>Is enabled?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="project_id" translate="label" type="obscure" showInDefault="1"  showInWebsite="0" showInStore="0" canRestore="1" sortOrder="20">
-                    <label>Project Id</label>
+                <field id="firebase_config" translate="label" type="file" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Upload Config</label>
+                    <backend_model>MageStack\FirePush\Model\Config\Backend\ConfigUploader</backend_model>
+                    <frontend_model>MageStack\FirePush\Block\Admin\Config\Frontend\MaskData</frontend_model>
                     <depends>
                         <field id="is_enabled">1</field>
                     </depends>
-                    <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                </field>
-                <field id="private_key_id" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="30">
-                    <label>Private key Id</label>
-                    <depends>
-                        <field id="is_enabled">1</field>
-                    </depends>
-                    <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                </field>
-                <field id="private_key" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="40">
-                    <label>Private key</label>
-                    <depends>
-                        <field id="is_enabled">1</field>
-                    </depends>
-                    <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                </field>
-                <field id="client_email" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="50">
-                    <label>Client email</label>
-                    <depends>
-                        <field id="is_enabled">1</field>
-                    </depends>
-                    <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                </field>
-                <field id="client_id" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="60">
-                    <label>Client Id</label>
-                    <depends>
-                        <field id="is_enabled">1</field>
-                    </depends>
-                    <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                </field>
-                <field id="vap_pub_key" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="70">
-                    <label>VAP public key</label>
-                    <depends>
-                        <field id="is_enabled">1</field>
-                    </depends>
-                    <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                 </field>
             </group>
         </section>

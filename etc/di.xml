@@ -20,7 +20,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="MageStack\FirePush\Model\Client" shared="true" />
     <preference for="MageStack\FirePush\Api\ConfigInterface" type="MageStack\FirePush\Model\Config" />
-    <preference for="MageStack\FirePush\Api\ConfigBuilderInterface" type="MageStack\FirePush\Model\ConfigBuilder" />
     <preference for="MageStack\FirePush\Api\MessageInterface" type="MageStack\FirePush\Model\Message" />
     <preference for="MageStack\FirePush\Api\MessageServiceInterface" type="MageStack\FirePush\Model\MessageService" />
     <type name="Magento\Framework\Console\CommandListInterface">

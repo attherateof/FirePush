@@ -39,44 +39,9 @@ interface ConfigInterface
     public function isEnabled(?int $webSiteId = null): bool;
 
     /**
-     * Get project id
+     * Get firebase config
      *
      * @return string
      */
-    public function getProjectId(): string;
-
-    /**
-     * Get private key id
-     *
-     * @return string
-     */
-    public function getPrivateKeyId(): string;
-
-    /**
-     * Get private key
-     *
-     * @return string
-     */
-    public function getPrivateKey(): string;
-
-    /**
-     * Get client email
-     *
-     * @return string
-     */
-    public function getClientEmail(): string;
-
-    /**
-     * Get client id
-     *
-     * @return string
-     */
-    public function getClientId(): string;
-
-    /**
-     * Get VAP public key
-     *
-     * @return string
-     */
-    public function getVAPPubKey(): string;
+    public function getFirebaseConfig(): string;
 }

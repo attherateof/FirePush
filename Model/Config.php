@@ -39,12 +39,7 @@ class Config implements ConfigInterface
      * Configuration paths
      */
     public const IS_ENABLED_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/is_enabled';
-    public const PROJECT_ID_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/project_id';
-    public const PRIVATE_KEY_ID_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/private_key_id';
-    public const PRIVATE_KEY_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/private_key';
-    public const CLIENT_EMAIL_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/client_email';
-    public const CLIENT_ID_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/client_id';
-    public const VAP_PUBLIC_KEY_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/vap_pub_key';
+    public const CONFIG_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/firebase_config';
 
     /**
      * Class constructor
@@ -73,96 +68,16 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getProjectId(): string
+    public function getFirebaseConfig(): string
     {
         $clientKey = $this->scopeConfig->getValue(
-            self::PROJECT_ID_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
+            self::CONFIG_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
         );
 
         if (!is_string($clientKey)) {
-            throw new RuntimeException(__('Client key can not be empty.')->render());
+            throw new RuntimeException(__('Firebase config must be set.')->render());
         }
 
         return $this->encryptor->decrypt($clientKey);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getPrivateKeyId(): string
-    {
-        $clientSecret = $this->scopeConfig->getValue(
-            self::PRIVATE_KEY_ID_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
-        );
-
-        if (!is_string($clientSecret)) {
-            throw new RuntimeException(__('Client key can not be empty.')->render());
-        }
-
-        return $this->encryptor->decrypt($clientSecret);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getPrivateKey(): string
-    {
-        $clientSecret = $this->scopeConfig->getValue(
-            self::PRIVATE_KEY_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
-        );
-
-        if (!is_string($clientSecret)) {
-            throw new RuntimeException(__('Client key can not be empty.')->render());
-        }
-
-        return $this->encryptor->decrypt($clientSecret);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getClientEmail(): string
-    {
-        $clientSecret = $this->scopeConfig->getValue(
-            self::CLIENT_EMAIL_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
-        );
-
-        if (!is_string($clientSecret)) {
-            throw new RuntimeException(__('Client key can not be empty.')->render());
-        }
-
-        return $this->encryptor->decrypt($clientSecret);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getClientId(): string
-    {
-        $clientSecret = $this->scopeConfig->getValue(
-            self::CLIENT_ID_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
-        );
-
-        if (!is_string($clientSecret)) {
-            throw new RuntimeException(__('Client key can not be empty.')->render());
-        }
-
-        return $this->encryptor->decrypt($clientSecret);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getVAPPubKey(): string
-    {
-        $clientSecret = $this->scopeConfig->getValue(
-            self::VAP_PUBLIC_KEY_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
-        );
-
-        if (!is_string($clientSecret)) {
-            throw new RuntimeException(__('Client key can not be empty.')->render());
-        }
-
-        return $this->encryptor->decrypt($clientSecret);
     }
 }
