@@ -36,6 +36,7 @@
                     <depends>
                         <field id="is_enabled">1</field>
                     </depends>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="vap_pub_key" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="70">
                     <label>VAP public key</label>
