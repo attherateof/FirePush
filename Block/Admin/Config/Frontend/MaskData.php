@@ -7,14 +7,13 @@ use Magento\Config\Block\System\Config\Form\Field;
 
 class MaskData extends Field
 {
+    public const MASKED_VALUE = '[Encrypted Firebase Configuration Active]';
+
     protected function _getElementHtml(AbstractElement $element)
     {
         $value = $element->getEscapedValue();
-
-        // If there's a value, show masked text instead of the encrypted content
         if ($value) {
-            $element->setValue('[******** Firebase Config File Uploaded ********]');
-            // $element->setReadonly(true);
+            $element->setValue(self::MASKED_VALUE);
         }
 
         return parent::_getElementHtml($element);

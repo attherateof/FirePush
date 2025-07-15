@@ -40,6 +40,9 @@ class Config implements ConfigInterface
      */
     public const IS_ENABLED_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/is_enabled';
     public const CONFIG_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/firebase_config';
+    public const VAP_PUBLIC_KEY_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/vap_pub_key';
+
+
 
     /**
      * Class constructor
@@ -79,5 +82,21 @@ class Config implements ConfigInterface
         }
 
         return $this->encryptor->decrypt($clientKey);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getVAPPubKey(): string
+    {
+        $clientSecret = $this->scopeConfig->getValue(
+            self::VAP_PUBLIC_KEY_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
+        );
+
+        if (!is_string($clientSecret)) {
+            throw new RuntimeException(__('Client key can not be empty.')->render());
+        }
+
+        return $this->encryptor->decrypt($clientSecret);
     }
 }

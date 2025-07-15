@@ -44,4 +44,11 @@ interface ConfigInterface
      * @return string
      */
     public function getFirebaseConfig(): string;
+
+    /**
+     * Get VAP public key
+     *
+     * @return string
+     */
+    public function getVAPPubKey(): string;
 }

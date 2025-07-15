@@ -14,7 +14,7 @@ use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-
+use MageStack\FirePush\Block\Admin\Config\Frontend\MaskData;
 class ConfigUploader extends Value
 {
     private const REQUIRED_KEYS = [
@@ -63,6 +63,12 @@ class ConfigUploader extends Value
             return parent::beforeSave();
         }
 
+        if ($this->shouldKeepExistingValue($fileData)) {
+            $oldValue = $this->getOldValue();
+            $this->setValue($oldValue);
+            return parent::beforeSave();
+        }
+
         if (!$this->isValidUpload($fileData)) {
             return parent::beforeSave();
         }
@@ -73,6 +79,15 @@ class ConfigUploader extends Value
         $this->setValue($this->encryptor->encrypt($content));
 
         return parent::beforeSave();
+    }
+
+    private function shouldKeepExistingValue(mixed $fileData): bool
+    {
+        return is_array($fileData)
+            && array_key_exists('value', $fileData)
+            && $fileData['value'] === MaskData::MASKED_VALUE
+            && array_key_exists('tmp_name', $fileData)
+            && $fileData['tmp_name'] === "";
     }
 
     private function shouldDeleteFile(mixed $fileData): bool
