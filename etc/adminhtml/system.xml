@@ -30,15 +30,22 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="firebase_config" translate="label" type="file" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Upload Config</label>
+                    <label>Back-end config</label>
                     <backend_model>MageStack\FirePush\Model\Config\Backend\ConfigUploader</backend_model>
                     <frontend_model>MageStack\FirePush\Block\Admin\Config\Frontend\MaskData</frontend_model>
                     <depends>
                         <field id="is_enabled">1</field>
                     </depends>
-                    <validate>required-entry</validate>
                 </field>
-                <field id="vap_pub_key" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="70">
+                <field id="frontend_firebase_config" translate="label" type="file" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Front-end config</label>
+                    <backend_model>MageStack\FirePush\Model\Config\Backend\FronEndConfUploader</backend_model>
+                    <frontend_model>MageStack\FirePush\Block\Admin\Config\Frontend\MaskData</frontend_model>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="vap_pub_key" translate="label" type="obscure" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1" sortOrder="40">
                     <label>VAP public key</label>
                     <depends>
                         <field id="is_enabled">1</field>

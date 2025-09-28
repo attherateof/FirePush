@@ -1,0 +1,242 @@
+<script type="module">
+    // Comprehensive browser support check
+    function checkBrowserSupport() {
+        const checks = {
+            serviceWorker: 'serviceWorker' in navigator,
+            notification: 'Notification' in window,
+            pushManager: 'PushManager' in window,
+            promises: typeof Promise !== 'undefined',
+            fetch: typeof fetch !== 'undefined',
+            indexedDB: 'indexedDB' in window,
+            crypto: 'crypto' in window && 'getRandomValues' in window.crypto
+        };
+
+        console.log('Browser support check:', checks);
+
+        const unsupported = Object.entries(checks)
+            .filter(([key, supported]) => !supported)
+            .map(([key]) => key);
+
+        if (unsupported.length > 0) {
+            console.warn('Unsupported features:', unsupported);
+            return false;
+        }
+
+        return true;
+    }
+
+    // Wait for DOM and check support
+    async function initializeFirebase() {
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            await new Promise(resolve => {
+                document.addEventListener('DOMContentLoaded', resolve);
+            });
+        }
+
+        // Check browser support first
+        if (!checkBrowserSupport()) {
+            console.error('Browser does not support required Firebase features');
+            return;
+        }
+
+        try {
+            // Dynamic imports with error handling
+            let firebaseModules;
+            try {
+                firebaseModules = await Promise.all([
+                    import("https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js"),
+                    import("https://www.gstatic.com/firebasejs/12.2.1/firebase-messaging.js")
+                ]);
+            } catch (importError) {
+                console.error('Failed to load Firebase modules:', importError);
+                return;
+            }
+
+            const [{ initializeApp }, { getMessaging, getToken, onMessage, isSupported }] = firebaseModules;
+
+            // Check Firebase messaging support
+            let messagingSupported;
+            try {
+                messagingSupported = await isSupported();
+            } catch (supportError) {
+                console.error('Error checking Firebase support:', supportError);
+                messagingSupported = false;
+            }
+
+            if (!messagingSupported) {
+                console.warn('Firebase messaging is not supported in this browser/context');
+                return;
+            }
+
+            // Configuration
+            const firebaseConfig = <?= $block->getFEConfig() ?>; // JSON from your block
+            const VAP_ID = '<?= $block->getVAPPubKey() ?>';
+
+            // Replace with the URL of your backend server
+            const SERVER_URL = '<?= $block->getSubscribeUrl() ?>';
+            const FORM_KEY = '<?= $block->getFormKey() ?>';
+            const TOPIC_NAME = "validate";
+
+            // Initialize Firebase app
+            let app;
+            try {
+                app = initializeApp(firebaseConfig);
+                console.log('Firebase app initialized successfully');
+            } catch (appError) {
+                console.error('Failed to initialize Firebase app:', appError);
+                return;
+            }
+
+            // Wait a moment for app to be fully ready
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            // Initialize messaging
+            let messaging;
+            try {
+                messaging = getMessaging(app);
+                console.log('Firebase messaging initialized successfully');
+            } catch (messagingError) {
+                console.error('Failed to initialize Firebase messaging:', messagingError);
+                return;
+            }
+
+            // Token sender function
+            async function sendTokenToServer(token, topic) {
+                try {
+                    const response = await fetch(SERVER_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(
+                            {
+                                token,
+                                topic,
+                                form_key: FORM_KEY
+                            }),
+                    });
+
+                    console.log(response.body);
+
+                    if (response.ok) {
+                        console.log('Token sent to server successfully');
+                    } else {
+                        console.error('Failed to send token to server:', response.status);
+                    }
+                } catch (error) {
+                    console.error('Error sending token to server:', error);
+                }
+            }
+
+            // Request permission and setup messaging
+            async function setupMessaging() {
+                try {
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') {
+                        console.log('Notification permission not granted');
+                        return;
+                    }
+
+                    console.log('Notification permission granted');
+
+                    // Clear existing service workers
+                    try {
+                        const registrations = await navigator.serviceWorker.getRegistrations();
+                        for (const registration of registrations) {
+                            if (registration.active?.scriptURL.includes('firebase-messaging-sw')) {
+                                await registration.unregister();
+                                console.log('Unregistered existing Firebase service worker');
+                            }
+                        }
+                        // Wait for cleanup
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    } catch (cleanupError) {
+                        console.warn('Error during service worker cleanup:', cleanupError);
+                    }
+
+                    // Register service worker
+                    let swRegistration;
+                    try {
+                        swRegistration = await navigator.serviceWorker.register(
+                            '<?= $block->getSWUrl() ?>',
+                            {
+                                scope: '/',
+                                updateViaCache: 'none'
+                            }
+                        );
+
+                        // Wait for service worker to be active
+                        if (swRegistration.installing) {
+                            await new Promise((resolve) => {
+                                const sw = swRegistration.installing;
+                                sw.addEventListener('statechange', () => {
+                                    if (sw.state === 'activated') {
+                                        resolve();
+                                    }
+                                });
+                            });
+                        } else if (swRegistration.waiting) {
+                            swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                        }
+
+                        console.log('Service worker registered successfully');
+                    } catch (swError) {
+                        console.error('Service worker registration failed:', swError);
+                        return;
+                    }
+
+                    // Get FCM token
+                    try {
+                        const token = await getToken(messaging, {
+                            vapidKey: VAP_ID,
+                            serviceWorkerRegistration: swRegistration
+                        });
+
+                        if (token) {
+                            console.log('FCM token obtained:', token);
+                            await sendTokenToServer(token, [TOPIC_NAME]);
+                        } else {
+                            console.warn('No FCM token available');
+                        }
+                    } catch (tokenError) {
+                        console.error('Failed to get FCM token:', tokenError);
+                    }
+
+                    // Setup foreground message handler
+                    try {
+                        onMessage(messaging, (payload) => {
+                            console.log('Foreground message received:', payload);
+
+                            if (payload.notification && Notification.permission === 'granted') {
+                                new Notification(payload.notification.title, {
+                                    body: payload.notification.body,
+                                    icon: payload.notification.icon || '/default-icon.png',
+                                    tag: 'firebase-foreground'
+                                });
+                            }
+                        });
+                        console.log('Foreground message handler setup complete');
+                    } catch (messageError) {
+                        console.error('Failed to setup message handler:', messageError);
+                    }
+
+                } catch (error) {
+                    console.error('Error in setupMessaging:', error);
+                }
+            }
+
+            // Start the messaging setup
+            await setupMessaging();
+
+        } catch (error) {
+            console.error('Fatal error in Firebase initialization:', error);
+        }
+    }
+
+    // Start initialization
+    initializeFirebase().catch(error => {
+        console.error('Failed to initialize Firebase:', error);
+    });
+</script>

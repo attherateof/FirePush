@@ -40,9 +40,8 @@ class Config implements ConfigInterface
      */
     public const IS_ENABLED_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/is_enabled';
     public const CONFIG_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/firebase_config';
+    public const CONFIG_FIRE_BASE_FRONT_END_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/frontend_firebase_config';
     public const VAP_PUBLIC_KEY_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH = 'websocket/firebase/vap_pub_key';
-
-
 
     /**
      * Class constructor
@@ -75,6 +74,22 @@ class Config implements ConfigInterface
     {
         $clientKey = $this->scopeConfig->getValue(
             self::CONFIG_FIRE_BASE_WEBSOCKET_CONFIG_XML_PATH
+        );
+
+        if (!is_string($clientKey)) {
+            throw new RuntimeException(__('Firebase config must be set.')->render());
+        }
+
+        return $this->encryptor->decrypt($clientKey);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFrontendConfig(): string
+    {
+        $clientKey = $this->scopeConfig->getValue(
+            self::CONFIG_FIRE_BASE_FRONT_END_WEBSOCKET_CONFIG_XML_PATH
         );
 
         if (!is_string($clientKey)) {

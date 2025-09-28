@@ -46,6 +46,13 @@ interface ConfigInterface
     public function getFirebaseConfig(): string;
 
     /**
+     * Get firebase config
+     *
+     * @return string
+     */
+    public function getFrontendConfig(): string;
+
+    /**
      * Get VAP public key
      *
      * @return string
